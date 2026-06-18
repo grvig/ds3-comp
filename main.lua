@@ -21,8 +21,15 @@ function love.draw()
     love.graphics.print("DS3 Completionist Companion", 50, 50)
 
     for i, boss in ipairs(bosses) do
+
+        local status = "[ ]"
+
+        if boss.defeated then
+            status = "[X]"
+        end
+
         love.graphics.print(
-            boss.name,
+            status .. " " .. boss.name,
             50,
             100 + (i * 30)
         )
