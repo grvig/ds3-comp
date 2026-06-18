@@ -10,6 +10,54 @@ bosses = {{
 }, {
     name = "Curse-Rotted Greatwood",
     defeated = false
+}, {
+    name = "Crystal Sage",
+    defeated = false
+}, {
+    name = "Deacons of the Deep",
+    defeated = false
+}, {
+    name = "Abyss Watchers",
+    defeated = false
+}, {
+    name = "High Lord Wolnir",
+    defeated = false
+}, {
+    name = "Old Demon King",
+    defeated = false
+}, {
+    name = "Pontiff Sulyvahn",
+    defeated = false
+}, {
+    name = "Aldrich",
+    defeated = false
+}, {
+    name = "Yhorm the Giant",
+    defeated = false
+}, {
+    name = "Dancer of the Boreal Valley",
+    defeated = false
+}, {
+    name = "Dragonslayer Armour",
+    defeated = false
+}, {
+    name = "Oceiros",
+    defeated = false
+}, {
+    name = "Champion Gundyr",
+    defeated = false
+}, {
+    name = "Twin Princes",
+    defeated = false
+}, {
+    name = "Ancient Wyvern",
+    defeated = false
+}, {
+    name = "Nameless King",
+    defeated = false
+}, {
+    name = "Soul of Cinder",
+    defeated = false
 }}
 
 function love.load()
