@@ -1,3 +1,6 @@
+boss_start_y = 100
+boss_spacing = 30
+
 bosses = {
     {
         name = "Iudex Gundyr",
@@ -34,4 +37,23 @@ function love.draw()
             100 + (i * 30)
         )
     end
+end
+
+function love.mousepressed(x, y, button)
+
+    if button ~= 1 then
+        return
+    end
+
+    for i, boss in ipairs(bosses) do
+
+        local boss_y = boss_start_y + (i * boss_spacing)
+
+        if y >= boss_y and y <= boss_y + 20 then
+            boss.defeated = not boss.defeated
+            break
+        end
+
+    end
+
 end
