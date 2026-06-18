@@ -1,20 +1,16 @@
 boss_start_y = 100
 boss_spacing = 30
 
-bosses = {
-    {
-        name = "Iudex Gundyr",
-        defeated = false
-    },
-    {
-        name = "Vordt of the Boreal Valley",
-        defeated = false
-    },
-    {
-        name = "Curse-Rotted Greatwood",
-        defeated = false
-    }
-}
+bosses = {{
+    name = "Iudex Gundyr",
+    defeated = false
+}, {
+    name = "Vordt of the Boreal Valley",
+    defeated = false
+}, {
+    name = "Curse-Rotted Greatwood",
+    defeated = false
+}}
 
 function love.load()
     love.window.setTitle("DS3 Completionist Companion")
@@ -22,6 +18,15 @@ end
 
 function love.draw()
     love.graphics.print("DS3 Completionist Companion", 50, 50)
+    local completed = 0
+
+    for _, boss in ipairs(bosses) do
+        if boss.defeated then
+            completed = completed + 1
+        end
+    end
+
+    love.graphics.print("Progress: " .. completed .. "/" .. #bosses, 50, 70)
 
     for i, boss in ipairs(bosses) do
 
@@ -31,11 +36,7 @@ function love.draw()
             status = "[X]"
         end
 
-        love.graphics.print(
-            status .. " " .. boss.name,
-            50,
-            100 + (i * 30)
-        )
+        love.graphics.print(status .. " " .. boss.name, 50, 100 + (i * 30))
     end
 end
 
