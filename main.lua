@@ -19,4 +19,12 @@ end
 
 function love.draw()
     love.graphics.print("DS3 Completionist Companion", 50, 50)
+
+    for i, boss in ipairs(bosses) do
+        love.graphics.print(
+            boss.name,
+            50,
+            100 + (i * 30)
+        )
+    end
 end
