@@ -1,6 +1,8 @@
 boss_start_y = 100
 boss_spacing = 30
 
+save_file = "progress.txt"
+
 bosses = {{
     name = "Iudex Gundyr",
     defeated = false
@@ -59,6 +61,18 @@ bosses = {{
     name = "Soul of Cinder",
     defeated = false
 }}
+
+function saveProgress()
+
+    local data = ""
+
+    for _, boss in ipairs(bosses) do
+        data = data .. tostring(boss.defeated) .. "\n"
+    end
+
+    love.filesystem.write(save_file, data)
+
+end
 
 function love.load()
     love.window.setTitle("DS3 Completionist Companion")
