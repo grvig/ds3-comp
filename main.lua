@@ -76,6 +76,7 @@ end
 
 function love.load()
     love.window.setTitle("DS3 Completionist Companion")
+    loadProgress()
 end
 
 function love.draw()
@@ -114,9 +115,31 @@ function love.mousepressed(x, y, button)
 
         if y >= boss_y and y <= boss_y + 20 then
             boss.defeated = not boss.defeated
+            saveProgress()
             break
         end
 
+    end
+
+end
+
+function loadProgress()
+
+    if not love.filesystem.getInfo(save_file) then
+        return
+    end
+
+    local content = love.filesystem.read(save_file)
+
+    local i = 1
+
+    for line in content:gmatch("[^\r\n]+") do
+
+        if bosses[i] then
+            bosses[i].defeated = (line == "true")
+        end
+
+        i = i + 1
     end
 
 end
