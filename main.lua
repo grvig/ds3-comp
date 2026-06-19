@@ -61,6 +61,24 @@ bosses = {{
 }, {
     name = "Soul of Cinder",
     defeated = false
+}, {
+    name = "Champion's Gravetender",
+    defeated = false
+}, {
+    name = "Sister Friede",
+    defeated = false
+}, {
+    name = "Demon Prince",
+    defeated = false
+}, {
+    name = "Halflight",
+    defeated = false
+}, {
+    name = "Darkeater Midir",
+    defeated = false
+}, {
+    name = "Slave Knight Gael",
+    defeated = false
 }}
 
 function saveProgress()
