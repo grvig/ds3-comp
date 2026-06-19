@@ -1,5 +1,6 @@
 boss_start_y = 100
 boss_spacing = 30
+scroll_offset = 0
 
 save_file = "progress.txt"
 
@@ -99,7 +100,7 @@ function love.draw()
             status = "[X]"
         end
 
-        love.graphics.print(status .. " " .. boss.name, 50, 100 + (i * 30))
+        love.graphics.print(status .. " " .. boss.name, 50, 100 + (i * 30) + scroll_offset)
     end
 end
 
@@ -141,5 +142,11 @@ function loadProgress()
 
         i = i + 1
     end
+
+end
+
+function love.wheelmoved(x, y)
+
+    scroll_offset = scroll_offset + (y * 20)
 
 end
