@@ -94,6 +94,9 @@ function saveProgress()
 end
 
 function love.load()
+    love.window.setMode(900, 700, {
+        resizable = true
+    })
     love.window.setTitle("DS3 Completionist Companion")
     loadProgress()
 end
