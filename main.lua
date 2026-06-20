@@ -166,6 +166,20 @@ function love.mousepressed(x, y, button)
         end
 
     end
+    for i, quest in ipairs(quests) do
+
+        local quest_y = 140 + (i * 30)
+
+        if x >= 500 and x <= 800 and y >= quest_y and y <= quest_y + 20 then
+
+            quest.completed = not quest.completed
+
+            saveProgress()
+
+            break
+        end
+
+    end
 
 end
 
