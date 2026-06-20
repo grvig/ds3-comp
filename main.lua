@@ -134,6 +134,19 @@ function love.draw()
 
         love.graphics.print(status .. " " .. boss.name, 50, 100 + (i * 30) + scroll_offset)
     end
+    love.graphics.print("NPC Quests", 500, 100)
+
+    for i, quest in ipairs(quests) do
+
+        local status = "[ ]"
+
+        if quest.completed then
+            status = "[X]"
+        end
+
+        love.graphics.print(status .. " " .. quest.name, 500, 140 + (i * 30))
+
+    end
 end
 
 function love.mousepressed(x, y, button)
