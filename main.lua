@@ -134,6 +134,17 @@ function love.draw()
 
         love.graphics.print(status .. " " .. boss.name, 50, 100 + (i * 30) + scroll_offset)
     end
+
+    local completed_quests = 0
+
+    for _, quest in ipairs(quests) do
+
+        if quest.completed then
+            completed_quests = completed_quests + 1
+        end
+
+    end
+    love.graphics.print("Quest Progress: " .. completed_quests .. "/" .. #quests, 500, 70)
     love.graphics.print("NPC Quests", 500, 100)
 
     for i, quest in ipairs(quests) do
