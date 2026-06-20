@@ -90,6 +90,33 @@ quests = {{
 }, {
     name = "Greirat",
     completed = false
+}, {
+    name = "Leonhard",
+    completed = false
+}, {
+    name = "Sirris",
+    completed = false
+}, {
+    name = "Yoel",
+    completed = false
+}, {
+    name = "Yuria",
+    completed = false
+}, {
+    name = "Orbeck",
+    completed = false
+}, {
+    name = "Cornyx",
+    completed = false
+}, {
+    name = "Karla",
+    completed = false
+}, {
+    name = "Hawkwood",
+    completed = false
+}, {
+    name = "Irina",
+    completed = false
 }}
 
 function saveProgress()
