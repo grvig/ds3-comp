@@ -130,7 +130,7 @@ function love.mousepressed(x, y, button)
 
     for i, boss in ipairs(bosses) do
 
-        local boss_y = boss_start_y + (i * boss_spacing)
+        local boss_y = boss_start_y + (i * boss_spacing) + scroll_offset
 
         if y >= boss_y and y <= boss_y + 20 then
             boss.defeated = not boss.defeated
