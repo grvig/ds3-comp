@@ -81,6 +81,17 @@ bosses = {{
     defeated = false
 }}
 
+quests = {{
+    name = "Siegward",
+    completed = false
+}, {
+    name = "Anri",
+    completed = false
+}, {
+    name = "Greirat",
+    completed = false
+}}
+
 function saveProgress()
 
     local data = ""
