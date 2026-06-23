@@ -121,10 +121,16 @@ quests = {{
 
 function saveProgress()
 
-    local data = ""
+    local data = "BOSSES\n"
 
     for _, boss in ipairs(bosses) do
         data = data .. tostring(boss.defeated) .. "\n"
+    end
+
+    data = data .. "QUESTS\n"
+
+    for _, quest in ipairs(quests) do
+        data = data .. tostring(quest.completed) .. "\n"
     end
 
     love.filesystem.write(save_file, data)
@@ -229,15 +235,44 @@ function loadProgress()
 
     local content = love.filesystem.read(save_file)
 
-    local i = 1
+    local section = ""
+    local boss_index = 1
+    local quest_index = 1
 
     for line in content:gmatch("[^\r\n]+") do
 
-        if bosses[i] then
-            bosses[i].defeated = (line == "true")
+        if line == "BOSSES" then
+
+            section = "bosses"
+
+        elseif line == "QUESTS" then
+
+            section = "quests"
+
+        else
+
+            if section == "bosses" then
+
+                if bosses[boss_index] then
+                    bosses[boss_index].defeated =
+                        (line == "true")
+                end
+
+                boss_index = boss_index + 1
+
+            elseif section == "quests" then
+
+                if quests[quest_index] then
+                    quests[quest_index].completed =
+                        (line == "true")
+                end
+
+                quest_index = quest_index + 1
+
+            end
+
         end
 
-        i = i + 1
     end
 
 end
