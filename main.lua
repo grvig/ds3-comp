@@ -1,6 +1,7 @@
 boss_start_y = 100
 boss_spacing = 30
-scroll_offset = 0
+boss_scroll = 0
+quest_scroll = 0
 header_height = 120
 
 save_file = "progress.txt"
@@ -168,7 +169,7 @@ function love.draw()
             status = "[X]"
         end
 
-        local draw_y = header_height + (i * boss_spacing) + scroll_offset
+        local draw_y = header_height + (i * boss_spacing) + boss_scroll
 
         if draw_y > header_height then
             love.graphics.print(status .. " " .. boss.name, 50, draw_y)
@@ -195,7 +196,7 @@ function love.draw()
             status = "[X]"
         end
 
-        local draw_y = header_height + 40 + (i * boss_spacing) + scroll_offset
+        local draw_y = header_height + 40 + (i * boss_spacing) + quest_scroll
 
         if draw_y > header_height then
             love.graphics.print(status .. " " .. quest.name, 500, draw_y)
@@ -212,7 +213,7 @@ function love.mousepressed(x, y, button)
 
     for i, boss in ipairs(bosses) do
 
-        local boss_y = header_height + (i * boss_spacing) + scroll_offset
+        local boss_y = header_height + (i * boss_spacing) + boss_scroll
 
         if x >= 50 and x <= 400 and y >= boss_y and y <= boss_y + 20 then
             boss.defeated = not boss.defeated
@@ -223,7 +224,7 @@ function love.mousepressed(x, y, button)
     end
     for i, quest in ipairs(quests) do
 
-        local quest_y = header_height + 40 + (i * boss_spacing)
+        local quest_y = header_height + 40 + (i * boss_spacing) + quest_scroll
 
         if x >= 500 and x <= 800 and y >= quest_y and y <= quest_y + 20 then
 
@@ -288,22 +289,40 @@ end
 
 function love.wheelmoved(x, y)
 
-    scroll_offset = scroll_offset + (y * 20)
+    local mouse_x, mouse_y = love.mouse.getPosition()
 
-    local total_items = math.max(#bosses, #quests)
+    if mouse_x < 450 then
 
-    local content_height = total_items * boss_spacing
+        boss_scroll = boss_scroll + (y * 20)
 
-    local window_height = love.graphics.getHeight()
+        local content_height = #bosses * boss_spacing
 
-    local min_scroll = math.min(0, window_height - content_height - 200)
+        local min_scroll = math.min(0, love.graphics.getHeight() - content_height - 200)
 
-    if scroll_offset > 0 then
-        scroll_offset = 0
-    end
+        if boss_scroll > 0 then
+            boss_scroll = 0
+        end
 
-    if scroll_offset < min_scroll then
-        scroll_offset = min_scroll
+        if boss_scroll < min_scroll then
+            boss_scroll = min_scroll
+        end
+
+    else
+
+        quest_scroll = quest_scroll + (y * 20)
+
+        local content_height = #quests * boss_spacing
+
+        local min_scroll = math.min(0, love.graphics.getHeight() - content_height - 200)
+
+        if quest_scroll > 0 then
+            quest_scroll = 0
+        end
+
+        if quest_scroll < min_scroll then
+            quest_scroll = min_scroll
+        end
+
     end
 
 end
