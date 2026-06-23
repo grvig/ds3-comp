@@ -1,7 +1,7 @@
 boss_start_y = 100
 boss_spacing = 30
 scroll_offset = 0
-header_height = 150
+header_height = 120
 
 save_file = "progress.txt"
 
@@ -138,6 +138,8 @@ function saveProgress()
 
 end
 
+love.graphics.line(20, header_height, 880, header_height)
+
 function love.load()
     love.window.setMode(900, 700, {
         resizable = true
@@ -166,7 +168,11 @@ function love.draw()
             status = "[X]"
         end
 
-        love.graphics.print(status .. " " .. boss.name, 50, header_height + (i * boss_spacing) + scroll_offset)
+        local draw_y = header_height + (i * boss_spacing) + scroll_offset
+
+        if draw_y > header_height then
+            love.graphics.print(status .. " " .. boss.name, 50, draw_y)
+        end
     end
 
     local completed_quests = 0
@@ -189,7 +195,11 @@ function love.draw()
             status = "[X]"
         end
 
-        love.graphics.print(status .. " " .. quest.name, 500, header_height + 40 + (i * boss_spacing) + scroll_offset)
+        local draw_y = header_height + 40 + (i * boss_spacing) + scroll_offset
+
+        if draw_y > header_height then
+            love.graphics.print(status .. " " .. quest.name, 500, draw_y)
+        end
 
     end
 end
@@ -255,8 +265,7 @@ function loadProgress()
             if section == "bosses" then
 
                 if bosses[boss_index] then
-                    bosses[boss_index].defeated =
-                        (line == "true")
+                    bosses[boss_index].defeated = (line == "true")
                 end
 
                 boss_index = boss_index + 1
@@ -264,8 +273,7 @@ function loadProgress()
             elseif section == "quests" then
 
                 if quests[quest_index] then
-                    quests[quest_index].completed =
-                        (line == "true")
+                    quests[quest_index].completed = (line == "true")
                 end
 
                 quest_index = quest_index + 1
