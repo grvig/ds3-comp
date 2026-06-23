@@ -197,7 +197,7 @@ function love.mousepressed(x, y, button)
 
         local boss_y = boss_start_y + (i * boss_spacing) + scroll_offset
 
-        if y >= boss_y and y <= boss_y + 20 then
+        if x >= 50 and x <= 400 and y >= boss_y and y <= boss_y + 20 then
             boss.defeated = not boss.defeated
             saveProgress()
             break
