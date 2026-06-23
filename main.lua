@@ -246,4 +246,20 @@ function love.wheelmoved(x, y)
 
     scroll_offset = scroll_offset + (y * 20)
 
+    local total_items = math.max(#bosses, #quests)
+
+    local content_height = total_items * boss_spacing
+
+    local window_height = love.graphics.getHeight()
+
+    local min_scroll = math.min(0, window_height - content_height - 200)
+
+    if scroll_offset > 0 then
+        scroll_offset = 0
+    end
+
+    if scroll_offset < min_scroll then
+        scroll_offset = min_scroll
+    end
+
 end
