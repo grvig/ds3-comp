@@ -1,6 +1,7 @@
 boss_start_y = 100
 boss_spacing = 30
 scroll_offset = 0
+header_height = 150
 
 save_file = "progress.txt"
 
@@ -165,7 +166,7 @@ function love.draw()
             status = "[X]"
         end
 
-        love.graphics.print(status .. " " .. boss.name, 50, 100 + (i * 30) + scroll_offset)
+        love.graphics.print(status .. " " .. boss.name, 50, header_height + (i * boss_spacing) + scroll_offset)
     end
 
     local completed_quests = 0
@@ -188,7 +189,7 @@ function love.draw()
             status = "[X]"
         end
 
-        love.graphics.print(status .. " " .. quest.name, 500, 140 + (i * 30))
+        love.graphics.print(status .. " " .. quest.name, 500, header_height + 40 + (i * boss_spacing) + scroll_offset)
 
     end
 end
@@ -201,7 +202,7 @@ function love.mousepressed(x, y, button)
 
     for i, boss in ipairs(bosses) do
 
-        local boss_y = boss_start_y + (i * boss_spacing) + scroll_offset
+        local boss_y = header_height + (i * boss_spacing) + scroll_offset
 
         if x >= 50 and x <= 400 and y >= boss_y and y <= boss_y + 20 then
             boss.defeated = not boss.defeated
@@ -212,7 +213,7 @@ function love.mousepressed(x, y, button)
     end
     for i, quest in ipairs(quests) do
 
-        local quest_y = 140 + (i * 30)
+        local quest_y = header_height + 40 + (i * boss_spacing)
 
         if x >= 500 and x <= 800 and y >= quest_y and y <= quest_y + 20 then
 
