@@ -2,6 +2,9 @@ boss_spacing = 30
 boss_scroll = 0
 quest_scroll = 0
 header_height = 120
+detail_height = 180
+selected_boss = nil
+selected_quest = nil
 
 save_file = "progress.txt"
 
@@ -322,47 +325,66 @@ function love.draw()
 
     love.graphics.print("Progress: " .. completed .. "/" .. #bosses, 50, 70)
 
+    local list_h = love.graphics.getHeight() - header_height - detail_height
+    love.graphics.setScissor(0, header_height, love.graphics.getWidth(), list_h)
+
     for i, boss in ipairs(bosses) do
-
-        local status = "[ ]"
-
-        if boss.defeated then
-            status = "[X]"
-        end
-
+        local status = boss.defeated and "[X]" or "[ ]"
         local draw_y = header_height + (i * boss_spacing) + boss_scroll
-
         if draw_y > header_height then
+            if i == selected_boss then
+                love.graphics.setColor(0.9, 0.8, 0.4)
+            end
             love.graphics.print(status .. " " .. boss.name, 50, draw_y)
+            love.graphics.setColor(1, 1, 1)
         end
     end
 
     local completed_quests = 0
-
     for _, quest in ipairs(quests) do
-
-        if quest.completed then
-            completed_quests = completed_quests + 1
-        end
-
+        if quest.completed then completed_quests = completed_quests + 1 end
     end
     love.graphics.print("Quest Progress: " .. completed_quests .. "/" .. #quests, 500, 70)
     love.graphics.print("NPC Quests", 500, 100)
 
     for i, quest in ipairs(quests) do
-
-        local status = "[ ]"
-
-        if quest.completed then
-            status = "[X]"
-        end
-
+        local status = quest.completed and "[X]" or "[ ]"
         local draw_y = header_height + 40 + (i * boss_spacing) + quest_scroll
-
         if draw_y > header_height then
+            if i == selected_quest then
+                love.graphics.setColor(0.9, 0.8, 0.4)
+            end
             love.graphics.print(status .. " " .. quest.name, 500, draw_y)
+            love.graphics.setColor(1, 1, 1)
         end
+    end
 
+    love.graphics.setScissor()
+
+    local panel_y = love.graphics.getHeight() - detail_height
+    love.graphics.line(20, panel_y, love.graphics.getWidth() - 20, panel_y)
+
+    local item = (selected_boss and bosses[selected_boss]) or (selected_quest and quests[selected_quest])
+    if item then
+        local done = item.defeated or item.completed
+        local tag = done and " [Done]" or ""
+        love.graphics.print(item.name .. tag, 30, panel_y + 10)
+        local line_y = panel_y + 32
+        if item.note then
+            love.graphics.setColor(0.8, 0.7, 0.3)
+            love.graphics.print(item.note, 30, line_y)
+            love.graphics.setColor(1, 1, 1)
+            line_y = line_y + 20
+        end
+        if item.steps then
+            for j, step in ipairs(item.steps) do
+                love.graphics.print(j .. ". " .. step, 30, line_y + (j - 1) * 22)
+            end
+        end
+    else
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.print("Click a boss or quest to see steps", 30, panel_y + 10)
+        love.graphics.setColor(1, 1, 1)
     end
 end
 
@@ -378,6 +400,8 @@ function love.mousepressed(x, y, button)
 
         if x >= 50 and x <= 400 and y >= boss_y and y <= boss_y + 20 then
             boss.defeated = not boss.defeated
+            selected_boss = i
+            selected_quest = nil
             saveProgress()
             break
         end
@@ -388,11 +412,10 @@ function love.mousepressed(x, y, button)
         local quest_y = header_height + 40 + (i * boss_spacing) + quest_scroll
 
         if x >= 500 and x <= 800 and y >= quest_y and y <= quest_y + 20 then
-
             quest.completed = not quest.completed
-
+            selected_quest = i
+            selected_boss = nil
             saveProgress()
-
             break
         end
 
@@ -458,7 +481,7 @@ function love.wheelmoved(x, y)
 
         local content_height = #bosses * boss_spacing
 
-        local min_scroll = math.min(0, love.graphics.getHeight() - content_height - 200)
+        local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
 
         if boss_scroll > 0 then
             boss_scroll = 0
@@ -474,7 +497,7 @@ function love.wheelmoved(x, y)
 
         local content_height = #quests * boss_spacing
 
-        local min_scroll = math.min(0, love.graphics.getHeight() - content_height - 200)
+        local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
 
         if quest_scroll > 0 then
             quest_scroll = 0
