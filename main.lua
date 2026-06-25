@@ -1,4 +1,3 @@
-boss_start_y = 100
 boss_spacing = 30
 boss_scroll = 0
 quest_scroll = 0
@@ -139,8 +138,6 @@ function saveProgress()
 
 end
 
-love.graphics.line(20, header_height, 880, header_height)
-
 function love.load()
     love.window.setMode(900, 700, {
         resizable = true
@@ -150,6 +147,7 @@ function love.load()
 end
 
 function love.draw()
+    love.graphics.line(20, header_height, 880, header_height)
     love.graphics.print("DS3 Completionist Companion", 50, 50)
     local completed = 0
 
