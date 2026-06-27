@@ -64,24 +64,42 @@ function love.draw()
     local weapon_done = 0
     for _, wep in ipairs(weapons) do if wep.obtained then weapon_done = weapon_done + 1 end end
 
+    local bar_h = 10
+    local bar_y = 72
+    local left_bar_w = mid_x - 40
+    local right_bar_w = mid_x - 40
+
     -- left header
     love.graphics.setColor(0.7, 0.7, 0.7)
-    love.graphics.print("Bosses", 20, 45)
-    love.graphics.print(boss_done .. " / " .. #bosses .. " defeated", 20, 65)
+    love.graphics.print("Bosses  " .. boss_done .. " / " .. #bosses, 20, 45)
+    love.graphics.setColor(0.2, 0.2, 0.2)
+    love.graphics.rectangle("fill", 20, bar_y, left_bar_w, bar_h)
+    love.graphics.setColor(0.85, 0.65, 0.15)
+    love.graphics.rectangle("fill", 20, bar_y, left_bar_w * (boss_done / #bosses), bar_h)
 
     -- right header tabs
-    local tab1_label = "NPC Quests"
-    local tab2_label = "Weapons"
-    love.graphics.setColor(right_panel == "quests" and 1 or 0.45, right_panel == "quests" and 1 or 0.45, right_panel == "quests" and 1 or 0.45)
-    love.graphics.print(tab1_label, mid_x + 20, 45)
-    love.graphics.setColor(right_panel == "weapons" and 1 or 0.45, right_panel == "weapons" and 1 or 0.45, right_panel == "weapons" and 1 or 0.45)
-    love.graphics.print(tab2_label, mid_x + 120, 45)
-    love.graphics.setColor(0.7, 0.7, 0.7)
+    local q_bright = right_panel == "quests" and 1 or 0.45
+    local wep_bright = right_panel == "weapons" and 1 or 0.45
+    love.graphics.setColor(q_bright, q_bright, q_bright)
+    love.graphics.print("NPC Quests", mid_x + 20, 45)
+    love.graphics.setColor(wep_bright, wep_bright, wep_bright)
+    love.graphics.print("Weapons", mid_x + 125, 45)
+
+    love.graphics.setColor(0.2, 0.2, 0.2)
+    love.graphics.rectangle("fill", mid_x + 20, bar_y, right_bar_w, bar_h)
+
     if right_panel == "quests" then
-        love.graphics.print(quest_done .. " / " .. #quests .. " completed", mid_x + 20, 65)
+        love.graphics.setColor(0.25, 0.6, 0.85)
+        love.graphics.rectangle("fill", mid_x + 20, bar_y, right_bar_w * (quest_done / #quests), bar_h)
+        love.graphics.setColor(0.7, 0.7, 0.7)
+        love.graphics.print(quest_done .. " / " .. #quests .. " completed", mid_x + 20, 45 + 16)
     else
-        love.graphics.print(weapon_done .. " / " .. #weapons .. " obtained", mid_x + 20, 65)
+        love.graphics.setColor(0.3, 0.78, 0.4)
+        love.graphics.rectangle("fill", mid_x + 20, bar_y, right_bar_w * (weapon_done / #weapons), bar_h)
+        love.graphics.setColor(0.7, 0.7, 0.7)
+        love.graphics.print(weapon_done .. " / " .. #weapons .. " obtained", mid_x + 20, 45 + 16)
     end
+
     love.graphics.setColor(1, 1, 1)
 
     love.graphics.line(20, header_height, w - 20, header_height)
