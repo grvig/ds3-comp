@@ -1,17 +1,21 @@
 ﻿boss_spacing = 30
 boss_scroll = 0
 quest_scroll = 0
+weapon_scroll = 0
 header_height = 120
 detail_height = 180
 selected_boss = nil
 selected_quest = nil
+selected_weapon = nil
 active_panel = "bosses"
+right_panel = "quests"
 detail_scroll = 0
 
 save_file = "progress.txt"
 
 bosses = require("data.bosses")
 quests = require("data.quests")
+weapons = require("data.weapons")
 
 function saveProgress()
     local data = "BOSSES\n"
@@ -24,6 +28,12 @@ function saveProgress()
 
     for _, quest in ipairs(quests) do
         data = data .. tostring(quest.completed) .. "\n"
+    end
+
+    data = data .. "WEAPONS\n"
+
+    for _, weapon in ipairs(weapons) do
+        data = data .. tostring(weapon.obtained) .. "\n"
     end
 
     love.filesystem.write(save_file, data)
@@ -51,11 +61,27 @@ function love.draw()
     local quest_done = 0
     for _, q in ipairs(quests) do if q.completed then quest_done = quest_done + 1 end end
 
+    local weapon_done = 0
+    for _, wep in ipairs(weapons) do if wep.obtained then weapon_done = weapon_done + 1 end end
+
+    -- left header
     love.graphics.setColor(0.7, 0.7, 0.7)
     love.graphics.print("Bosses", 20, 45)
     love.graphics.print(boss_done .. " / " .. #bosses .. " defeated", 20, 65)
-    love.graphics.print("NPC Quests", mid_x + 20, 45)
-    love.graphics.print(quest_done .. " / " .. #quests .. " completed", mid_x + 20, 65)
+
+    -- right header tabs
+    local tab1_label = "NPC Quests"
+    local tab2_label = "Weapons"
+    love.graphics.setColor(right_panel == "quests" and 1 or 0.45, right_panel == "quests" and 1 or 0.45, right_panel == "quests" and 1 or 0.45)
+    love.graphics.print(tab1_label, mid_x + 20, 45)
+    love.graphics.setColor(right_panel == "weapons" and 1 or 0.45, right_panel == "weapons" and 1 or 0.45, right_panel == "weapons" and 1 or 0.45)
+    love.graphics.print(tab2_label, mid_x + 120, 45)
+    love.graphics.setColor(0.7, 0.7, 0.7)
+    if right_panel == "quests" then
+        love.graphics.print(quest_done .. " / " .. #quests .. " completed", mid_x + 20, 65)
+    else
+        love.graphics.print(weapon_done .. " / " .. #weapons .. " obtained", mid_x + 20, 65)
+    end
     love.graphics.setColor(1, 1, 1)
 
     love.graphics.line(20, header_height, w - 20, header_height)
@@ -75,13 +101,25 @@ function love.draw()
         end
     end
 
-    for i, quest in ipairs(quests) do
-        local status = quest.completed and "[X]" or "[ ]"
-        local draw_y = header_height + (i * boss_spacing) + quest_scroll
-        if draw_y > header_height then
-            if i == selected_quest then love.graphics.setColor(0.9, 0.8, 0.4) end
-            love.graphics.print(status .. " " .. quest.name, mid_x + 20, draw_y)
-            love.graphics.setColor(1, 1, 1)
+    if right_panel == "quests" then
+        for i, quest in ipairs(quests) do
+            local status = quest.completed and "[X]" or "[ ]"
+            local draw_y = header_height + (i * boss_spacing) + quest_scroll
+            if draw_y > header_height then
+                if i == selected_quest then love.graphics.setColor(0.9, 0.8, 0.4) end
+                love.graphics.print(status .. " " .. quest.name, mid_x + 20, draw_y)
+                love.graphics.setColor(1, 1, 1)
+            end
+        end
+    else
+        for i, wep in ipairs(weapons) do
+            local status = wep.obtained and "[X]" or "[ ]"
+            local draw_y = header_height + (i * boss_spacing) + weapon_scroll
+            if draw_y > header_height then
+                if i == selected_weapon then love.graphics.setColor(0.9, 0.8, 0.4) end
+                love.graphics.print(status .. " " .. wep.name, mid_x + 20, draw_y)
+                love.graphics.setColor(1, 1, 1)
+            end
         end
     end
 
@@ -90,11 +128,11 @@ function love.draw()
     local panel_y = love.graphics.getHeight() - detail_height
     love.graphics.line(20, panel_y, w - 20, panel_y)
 
-    local item = (selected_boss and bosses[selected_boss]) or (selected_quest and quests[selected_quest])
+    local item = (selected_boss and bosses[selected_boss]) or (selected_quest and quests[selected_quest]) or (selected_weapon and weapons[selected_weapon])
     if item then
         love.graphics.setScissor(0, panel_y + 2, w, detail_height - 2)
         local base_y = panel_y + 10 - detail_scroll
-        local done = item.defeated or item.completed
+        local done = item.defeated or item.completed or item.obtained
         local tag = done and " [Done]" or ""
         love.graphics.print(item.name .. tag, 30, base_y)
         local line_y = base_y + 22
@@ -126,6 +164,21 @@ function love.mousepressed(x, y, button)
 
     local mid_x = math.floor(love.graphics.getWidth() / 2)
 
+    -- tab clicks
+    if x > mid_x and y >= 40 and y <= 60 then
+        if x < mid_x + 120 then
+            right_panel = "quests"
+            selected_weapon = nil
+            active_panel = "quests"
+        else
+            right_panel = "weapons"
+            selected_quest = nil
+            active_panel = "weapons"
+        end
+        detail_scroll = 0
+        return
+    end
+
     if x < mid_x then
         active_panel = "bosses"
         for i, boss in ipairs(bosses) do
@@ -134,12 +187,13 @@ function love.mousepressed(x, y, button)
                 boss.defeated = not boss.defeated
                 selected_boss = i
                 selected_quest = nil
+                selected_weapon = nil
                 detail_scroll = 0
                 saveProgress()
                 break
             end
         end
-    else
+    elseif right_panel == "quests" then
         active_panel = "quests"
         for i, quest in ipairs(quests) do
             local quest_y = header_height + (i * boss_spacing) + quest_scroll
@@ -147,6 +201,21 @@ function love.mousepressed(x, y, button)
                 quest.completed = not quest.completed
                 selected_quest = i
                 selected_boss = nil
+                selected_weapon = nil
+                detail_scroll = 0
+                saveProgress()
+                break
+            end
+        end
+    else
+        active_panel = "weapons"
+        for i, wep in ipairs(weapons) do
+            local wep_y = header_height + (i * boss_spacing) + weapon_scroll
+            if y >= wep_y and y <= wep_y + 20 then
+                wep.obtained = not wep.obtained
+                selected_weapon = i
+                selected_boss = nil
+                selected_quest = nil
                 detail_scroll = 0
                 saveProgress()
                 break
@@ -160,49 +229,74 @@ function love.keypressed(key)
         active_panel = "bosses"
         if not selected_boss then selected_boss = 1 end
         selected_quest = nil
+        selected_weapon = nil
         detail_scroll = 0
     elseif key == "right" then
-        active_panel = "quests"
-        if not selected_quest then selected_quest = 1 end
-        selected_boss = nil
+        if active_panel == "bosses" then
+            active_panel = right_panel
+            if right_panel == "quests" and not selected_quest then selected_quest = 1 end
+            if right_panel == "weapons" and not selected_weapon then selected_weapon = 1 end
+            selected_boss = nil
+        elseif active_panel == "quests" then
+            right_panel = "weapons"
+            active_panel = "weapons"
+            if not selected_weapon then selected_weapon = 1 end
+            selected_quest = nil
+        else
+            right_panel = "quests"
+            active_panel = "quests"
+            if not selected_quest then selected_quest = 1 end
+            selected_weapon = nil
+        end
         detail_scroll = 0
     elseif key == "up" then
+        detail_scroll = 0
         if active_panel == "bosses" then
             selected_boss = math.max(1, (selected_boss or 2) - 1)
             selected_quest = nil
-            detail_scroll = 0
+            selected_weapon = nil
             local item_y = header_height + selected_boss * boss_spacing + boss_scroll
             if item_y < header_height + boss_spacing then
                 boss_scroll = boss_scroll + (header_height + boss_spacing - item_y)
             end
-        else
+        elseif active_panel == "quests" then
             selected_quest = math.max(1, (selected_quest or 2) - 1)
             selected_boss = nil
-            detail_scroll = 0
+            selected_weapon = nil
             local item_y = header_height + selected_quest * boss_spacing + quest_scroll
             if item_y < header_height + boss_spacing then
                 quest_scroll = quest_scroll + (header_height + boss_spacing - item_y)
             end
+        else
+            selected_weapon = math.max(1, (selected_weapon or 2) - 1)
+            selected_boss = nil
+            selected_quest = nil
+            local item_y = header_height + selected_weapon * boss_spacing + weapon_scroll
+            if item_y < header_height + boss_spacing then
+                weapon_scroll = weapon_scroll + (header_height + boss_spacing - item_y)
+            end
         end
     elseif key == "down" then
+        detail_scroll = 0
+        local visible_bottom = love.graphics.getHeight() - detail_height - boss_spacing
         if active_panel == "bosses" then
             selected_boss = math.min(#bosses, (selected_boss or 0) + 1)
             selected_quest = nil
-            detail_scroll = 0
+            selected_weapon = nil
             local item_y = header_height + selected_boss * boss_spacing + boss_scroll
-            local visible_bottom = love.graphics.getHeight() - detail_height - boss_spacing
-            if item_y > visible_bottom then
-                boss_scroll = boss_scroll - (item_y - visible_bottom)
-            end
-        else
+            if item_y > visible_bottom then boss_scroll = boss_scroll - (item_y - visible_bottom) end
+        elseif active_panel == "quests" then
             selected_quest = math.min(#quests, (selected_quest or 0) + 1)
             selected_boss = nil
-            detail_scroll = 0
+            selected_weapon = nil
             local item_y = header_height + selected_quest * boss_spacing + quest_scroll
-            local visible_bottom = love.graphics.getHeight() - detail_height - boss_spacing
-            if item_y > visible_bottom then
-                quest_scroll = quest_scroll - (item_y - visible_bottom)
-            end
+            if item_y > visible_bottom then quest_scroll = quest_scroll - (item_y - visible_bottom) end
+        else
+            selected_weapon = math.min(#weapons, (selected_weapon or 0) + 1)
+            selected_boss = nil
+            selected_quest = nil
+            local item_y = header_height + selected_weapon * boss_spacing + weapon_scroll
+            if item_y > visible_bottom then weapon_scroll = weapon_scroll - (item_y - visible_bottom) end
         end
     elseif key == "space" or key == "return" then
         if selected_boss then
@@ -210,6 +304,9 @@ function love.keypressed(key)
             saveProgress()
         elseif selected_quest then
             quests[selected_quest].completed = not quests[selected_quest].completed
+            saveProgress()
+        elseif selected_weapon then
+            weapons[selected_weapon].obtained = not weapons[selected_weapon].obtained
             saveProgress()
         end
     end
@@ -226,6 +323,7 @@ function loadProgress()
     local section = ""
     local boss_index = 1
     local quest_index = 1
+    local weapon_index = 1
 
     for line in content:gmatch("[^\r\n]+") do
 
@@ -236,6 +334,10 @@ function loadProgress()
         elseif line == "QUESTS" then
 
             section = "quests"
+
+        elseif line == "WEAPONS" then
+
+            section = "weapons"
 
         else
 
@@ -254,6 +356,14 @@ function loadProgress()
                 end
 
                 quest_index = quest_index + 1
+
+            elseif section == "weapons" then
+
+                if weapons[weapon_index] then
+                    weapons[weapon_index].obtained = (line == "true")
+                end
+
+                weapon_index = weapon_index + 1
 
             end
 
@@ -290,21 +400,25 @@ function love.wheelmoved(x, y)
             boss_scroll = min_scroll
         end
 
-    else
+    elseif right_panel == "quests" then
 
         quest_scroll = quest_scroll + (y * 20)
 
         local content_height = #quests * boss_spacing
-
         local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
 
-        if quest_scroll > 0 then
-            quest_scroll = 0
-        end
+        if quest_scroll > 0 then quest_scroll = 0 end
+        if quest_scroll < min_scroll then quest_scroll = min_scroll end
 
-        if quest_scroll < min_scroll then
-            quest_scroll = min_scroll
-        end
+    else
+
+        weapon_scroll = weapon_scroll + (y * 20)
+
+        local content_height = #weapons * boss_spacing
+        local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
+
+        if weapon_scroll > 0 then weapon_scroll = 0 end
+        if weapon_scroll < min_scroll then weapon_scroll = min_scroll end
 
     end
 
