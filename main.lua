@@ -42,10 +42,30 @@ end
 
 function love.load()
     love.window.setMode(900, 700, {
-        resizable = true
+        resizable = true,
+        minwidth = 640,
+        minheight = 480,
     })
     love.window.setTitle("DS3 Completionist Companion")
     loadProgress()
+end
+
+function clampScrolls()
+    local h = love.graphics.getHeight()
+    local usable = h - header_height - detail_height - boss_spacing
+
+    local boss_min = math.min(0, usable - #bosses * boss_spacing)
+    boss_scroll = math.max(boss_min, math.min(0, boss_scroll))
+
+    local quest_min = math.min(0, usable - #quests * boss_spacing)
+    quest_scroll = math.max(quest_min, math.min(0, quest_scroll))
+
+    local weapon_min = math.min(0, usable - #weapons * boss_spacing)
+    weapon_scroll = math.max(weapon_min, math.min(0, weapon_scroll))
+end
+
+function love.resize()
+    clampScrolls()
 end
 
 function love.draw()
