@@ -411,48 +411,48 @@ function love.load()
 end
 
 function love.draw()
-    love.graphics.line(20, header_height, 880, header_height)
-    love.graphics.print("DS3 Completionist Companion", 50, 50)
-    local completed = 0
+    local w = love.graphics.getWidth()
+    local mid_x = math.floor(w / 2)
+    local panel_y = love.graphics.getHeight() - detail_height
 
-    for _, boss in ipairs(bosses) do
-        if boss.defeated then
-            completed = completed + 1
-        end
-    end
+    -- header
+    love.graphics.print("DS3 Completionist Companion", 20, 18)
 
-    love.graphics.print("Progress: " .. completed .. "/" .. #bosses, 50, 70)
+    local boss_done = 0
+    for _, b in ipairs(bosses) do if b.defeated then boss_done = boss_done + 1 end end
+    local quest_done = 0
+    for _, q in ipairs(quests) do if q.completed then quest_done = quest_done + 1 end end
 
+    love.graphics.setColor(0.7, 0.7, 0.7)
+    love.graphics.print("Bosses", 20, 45)
+    love.graphics.print(boss_done .. " / " .. #bosses .. " defeated", 20, 65)
+    love.graphics.print("NPC Quests", mid_x + 20, 45)
+    love.graphics.print(quest_done .. " / " .. #quests .. " completed", mid_x + 20, 65)
+    love.graphics.setColor(1, 1, 1)
+
+    love.graphics.line(20, header_height, w - 20, header_height)
+    love.graphics.line(mid_x, header_height, mid_x, panel_y)
+
+    -- scrollable lists
     local list_h = love.graphics.getHeight() - header_height - detail_height
-    love.graphics.setScissor(0, header_height, love.graphics.getWidth(), list_h)
+    love.graphics.setScissor(0, header_height, w, list_h)
 
     for i, boss in ipairs(bosses) do
         local status = boss.defeated and "[X]" or "[ ]"
         local draw_y = header_height + (i * boss_spacing) + boss_scroll
         if draw_y > header_height then
-            if i == selected_boss then
-                love.graphics.setColor(0.9, 0.8, 0.4)
-            end
-            love.graphics.print(status .. " " .. boss.name, 50, draw_y)
+            if i == selected_boss then love.graphics.setColor(0.9, 0.8, 0.4) end
+            love.graphics.print(status .. " " .. boss.name, 20, draw_y)
             love.graphics.setColor(1, 1, 1)
         end
     end
 
-    local completed_quests = 0
-    for _, quest in ipairs(quests) do
-        if quest.completed then completed_quests = completed_quests + 1 end
-    end
-    love.graphics.print("Quest Progress: " .. completed_quests .. "/" .. #quests, 500, 70)
-    love.graphics.print("NPC Quests", 500, 100)
-
     for i, quest in ipairs(quests) do
         local status = quest.completed and "[X]" or "[ ]"
-        local draw_y = header_height + 40 + (i * boss_spacing) + quest_scroll
+        local draw_y = header_height + (i * boss_spacing) + quest_scroll
         if draw_y > header_height then
-            if i == selected_quest then
-                love.graphics.setColor(0.9, 0.8, 0.4)
-            end
-            love.graphics.print(status .. " " .. quest.name, 500, draw_y)
+            if i == selected_quest then love.graphics.setColor(0.9, 0.8, 0.4) end
+            love.graphics.print(status .. " " .. quest.name, mid_x + 20, draw_y)
             love.graphics.setColor(1, 1, 1)
         end
     end
@@ -469,7 +469,11 @@ function love.draw()
         love.graphics.print(item.name .. tag, 30, panel_y + 10)
         local line_y = panel_y + 32
         if item.note then
-            love.graphics.setColor(0.8, 0.7, 0.3)
+            if item.note:sub(1, 7) == "LOCKOUT" then
+                love.graphics.setColor(0.9, 0.3, 0.3)
+            else
+                love.graphics.setColor(0.8, 0.7, 0.3)
+            end
             love.graphics.print(item.note, 30, line_y)
             love.graphics.setColor(1, 1, 1)
             line_y = line_y + 20
@@ -487,38 +491,33 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button)
+    if button ~= 1 then return end
 
-    if button ~= 1 then
-        return
-    end
+    local mid_x = math.floor(love.graphics.getWidth() / 2)
 
-    for i, boss in ipairs(bosses) do
-
-        local boss_y = header_height + (i * boss_spacing) + boss_scroll
-
-        if x >= 50 and x <= 400 and y >= boss_y and y <= boss_y + 20 then
-            boss.defeated = not boss.defeated
-            selected_boss = i
-            selected_quest = nil
-            saveProgress()
-            break
+    if x < mid_x then
+        for i, boss in ipairs(bosses) do
+            local boss_y = header_height + (i * boss_spacing) + boss_scroll
+            if y >= boss_y and y <= boss_y + 20 then
+                boss.defeated = not boss.defeated
+                selected_boss = i
+                selected_quest = nil
+                saveProgress()
+                break
+            end
         end
-
-    end
-    for i, quest in ipairs(quests) do
-
-        local quest_y = header_height + 40 + (i * boss_spacing) + quest_scroll
-
-        if x >= 500 and x <= 800 and y >= quest_y and y <= quest_y + 20 then
-            quest.completed = not quest.completed
-            selected_quest = i
-            selected_boss = nil
-            saveProgress()
-            break
+    else
+        for i, quest in ipairs(quests) do
+            local quest_y = header_height + (i * boss_spacing) + quest_scroll
+            if y >= quest_y and y <= quest_y + 20 then
+                quest.completed = not quest.completed
+                selected_quest = i
+                selected_boss = nil
+                saveProgress()
+                break
+            end
         end
-
     end
-
 end
 
 function loadProgress()
@@ -572,8 +571,9 @@ end
 function love.wheelmoved(x, y)
 
     local mouse_x, mouse_y = love.mouse.getPosition()
+    local mid_x = math.floor(love.graphics.getWidth() / 2)
 
-    if mouse_x < 450 then
+    if mouse_x < mid_x then
 
         boss_scroll = boss_scroll + (y * 20)
 
