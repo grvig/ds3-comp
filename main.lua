@@ -248,43 +248,141 @@ bosses = {
     },
 }
 
-quests = {{
-    name = "Siegward",
-    completed = false
-}, {
-    name = "Anri",
-    completed = false
-}, {
-    name = "Greirat",
-    completed = false
-}, {
-    name = "Leonhard",
-    completed = false
-}, {
-    name = "Sirris",
-    completed = false
-}, {
-    name = "Yoel",
-    completed = false
-}, {
-    name = "Yuria",
-    completed = false
-}, {
-    name = "Orbeck",
-    completed = false
-}, {
-    name = "Cornyx",
-    completed = false
-}, {
-    name = "Karla",
-    completed = false
-}, {
-    name = "Hawkwood",
-    completed = false
-}, {
-    name = "Irina",
-    completed = false
-}}
+quests = {
+    {
+        name = "Siegward",
+        completed = false,
+        steps = {
+            "Meet Siegward on the Cathedral of the Deep elevator (ride it down, then back up)",
+            "Buy back his armor from Patches after he sets up shop in Firelink Shrine",
+            "Return armor to Siegward at the well in Irithyll of the Boreal Valley",
+            "Free Siegward from his cell in Irithyll Dungeon using the Old Cell Key",
+            "He appears at Yhorm's fight — defeat Yhorm to complete the quest",
+        },
+        note = "Must free Siegward before defeating Yhorm or he won't appear",
+    },
+    {
+        name = "Anri",
+        completed = false,
+        steps = {
+            "Meet Anri and Horace at Halfway Fortress bonfire on Road of Sacrifices",
+            "Find Horace in Smouldering Lake and kill him — do NOT tell Anri his location",
+            "Find Anri in Church of Yorshka in Irithyll — kill the pilgrim assassin near them",
+            "Find Anri at the tomb in Anor Londo (they're going to kill Aldrich)",
+        },
+        note = "LOCKOUT: Telling Anri where Horace is sends Anri to die. Joining Rosaria's Fingers also locks this quest.",
+    },
+    {
+        name = "Greirat",
+        completed = false,
+        steps = {
+            "Free Greirat from his cell on High Wall of Lothric using the Cell Key",
+            "Send him to pillage Undead Settlement (always safe)",
+            "Before sending him to Irithyll: recruit Patches OR ensure Siegward is at the Irithyll well",
+            "Send him to Irithyll — he survives only if Siegward or Patches can rescue him",
+            "Send him to Lothric Castle (he dies here regardless — nothing saves him at this point)",
+        },
+        note = "LOCKOUT: Greirat dies on the Irithyll run if neither Siegward nor Patches is available",
+    },
+    {
+        name = "Leonhard",
+        completed = false,
+        steps = {
+            "Talk to Leonhard at Firelink Shrine — he gives you the Lift Chamber Key",
+            "Use it on High Wall of Lothric to unlock the lift and kill the Darkwraith for a Red Eye Orb",
+            "Offer a Pale Tongue to Rosaria in Cathedral of the Deep",
+            "Defeat Leonhard when he invades Rosaria's chamber — he drops the Black Eye Orb",
+            "Use the Black Eye Orb in Gwynevere's chamber in Anor Londo to invade and kill him",
+        },
+        note = "LOCKOUT: Must use the Black Eye Orb before defeating Aldrich or Leonhard's sign disappears",
+    },
+    {
+        name = "Sirris",
+        completed = false,
+        steps = {
+            "Meet Sirris at Firelink Shrine and exhaust her dialogue",
+            "Use her summon sign near Church of Yorshka bonfire in Irithyll to help fight Creighton",
+            "Use her summon sign near Cliff Underside bonfire in Undead Settlement to fight Hodrick",
+            "After Hodrick dies she moves to Firelink — exhaust dialogue for the Sunset armor set",
+        },
+        note = "LOCKOUT: Joining Rosaria's Fingers covenant permanently locks out this quest",
+    },
+    {
+        name = "Yoel",
+        completed = false,
+        steps = {
+            "Find Yoel among the failed pilgrims past Foot of the High Wall in Undead Settlement",
+            "Recruit him to Firelink Shrine",
+            "Visit him and select 'Draw Out True Strength' — repeat 5 times for 5 free levels",
+            "After the 5th draw Yoel dies and Yuria of Londor takes his place",
+        },
+        note = "LOCKOUT: Yoel disappears if you reach the Halfway Fortress bonfire before recruiting him",
+    },
+    {
+        name = "Yuria",
+        completed = false,
+        steps = {
+            "Complete Yoel's quest (all 5 draws of true strength)",
+            "Talk to Yuria in Firelink — she sells dark sorceries and advances the Hollow ending",
+            "Complete Anri's questline alongside this one",
+            "After Soul of Cinder, choose the Usurpation of Fire ending at the First Flame",
+        },
+        note = "LOCKOUT: Removing your Dark Sigils with the Fire Keeper causes Yuria to leave Firelink permanently",
+    },
+    {
+        name = "Orbeck",
+        completed = false,
+        steps = {
+            "Find Orbeck in the Road of Sacrifices swamp (Crystal Sage area) and recruit him",
+            "Buy at least 3 sorceries from him before defeating 4 bosses — or give him a scroll early",
+            "Give him all four scrolls: Sage's Scroll, Golden Scroll, Logan's Scroll, Crystal Scroll",
+            "After all scrolls are given he moves to Grand Archives — exhaust dialogue there to complete",
+        },
+        note = "LOCKOUT: Orbeck leaves Firelink if too many bosses are defeated without purchasing from him",
+    },
+    {
+        name = "Cornyx",
+        completed = false,
+        steps = {
+            "Free Cornyx from his hanging cage in Undead Settlement (near the Fire Demon)",
+            "Give him the Great Swamp Tome (Road of Sacrifices swamp)",
+            "Give him the Carthus Pyromancy Tome (Catacombs of Carthus) and Izalith Pyromancy Tome (Smouldering Lake)",
+            "Give him the Quelana Pyromancy Tome (rare drop in Smouldering Lake) to complete the quest",
+        },
+    },
+    {
+        name = "Karla",
+        completed = false,
+        steps = {
+            "Obtain the Jailer's Key Ring from a body in the Profaned Capital",
+            "Use it to free Karla from her cell in Irithyll Dungeon",
+            "Give her the dark tomes other teachers refuse: Deep Braille Divine Tome, Londor Braille Divine Tome, Grave Warden Tome, Quelana Pyromancy Tome",
+        },
+        note = "Give dark/forbidden tomes to Karla instead of Irina — giving them to Irina locks out Irina's good ending",
+    },
+    {
+        name = "Hawkwood",
+        completed = false,
+        steps = {
+            "Exhaust Hawkwood's dialogue at Firelink Shrine",
+            "Optionally use his summon sign for the Abyss Watchers fight",
+            "After Abyss Watchers are defeated, find his note about the Path of the Dragon gesture",
+            "Use Path of the Dragon gesture at the Archdragon Peak altar — Hawkwood invades",
+            "Defeat Hawkwood to receive the Twinkling Dragon Torso Stone",
+        },
+    },
+    {
+        name = "Irina",
+        completed = false,
+        steps = {
+            "Buy the Grave Key from the Undead Settlement sewer merchant",
+            "Use it to free Irina from her cell near the Dilapidated Bridge bonfire",
+            "Purchase ALL of her light miracles (do not give her any dark braille tomes)",
+            "After buying everything she moves to the Altar of Sunlight — quest complete",
+        },
+        note = "LOCKOUT: Giving Irina dark braille tomes causes her to go mad and bricks her good ending. Give those to Karla.",
+    },
+}
 
 function saveProgress()
 
