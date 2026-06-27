@@ -5,6 +5,7 @@ header_height = 120
 detail_height = 180
 selected_boss = nil
 selected_quest = nil
+active_panel = "bosses"
 
 save_file = "progress.txt"
 
@@ -496,6 +497,7 @@ function love.mousepressed(x, y, button)
     local mid_x = math.floor(love.graphics.getWidth() / 2)
 
     if x < mid_x then
+        active_panel = "bosses"
         for i, boss in ipairs(bosses) do
             local boss_y = header_height + (i * boss_spacing) + boss_scroll
             if y >= boss_y and y <= boss_y + 20 then
@@ -507,6 +509,7 @@ function love.mousepressed(x, y, button)
             end
         end
     else
+        active_panel = "quests"
         for i, quest in ipairs(quests) do
             local quest_y = header_height + (i * boss_spacing) + quest_scroll
             if y >= quest_y and y <= quest_y + 20 then
@@ -516,6 +519,60 @@ function love.mousepressed(x, y, button)
                 saveProgress()
                 break
             end
+        end
+    end
+end
+
+function love.keypressed(key)
+    if key == "left" then
+        active_panel = "bosses"
+        if not selected_boss then selected_boss = 1 end
+        selected_quest = nil
+    elseif key == "right" then
+        active_panel = "quests"
+        if not selected_quest then selected_quest = 1 end
+        selected_boss = nil
+    elseif key == "up" then
+        if active_panel == "bosses" then
+            selected_boss = math.max(1, (selected_boss or 2) - 1)
+            selected_quest = nil
+            local item_y = header_height + selected_boss * boss_spacing + boss_scroll
+            if item_y < header_height + boss_spacing then
+                boss_scroll = boss_scroll + (header_height + boss_spacing - item_y)
+            end
+        else
+            selected_quest = math.max(1, (selected_quest or 2) - 1)
+            selected_boss = nil
+            local item_y = header_height + selected_quest * boss_spacing + quest_scroll
+            if item_y < header_height + boss_spacing then
+                quest_scroll = quest_scroll + (header_height + boss_spacing - item_y)
+            end
+        end
+    elseif key == "down" then
+        if active_panel == "bosses" then
+            selected_boss = math.min(#bosses, (selected_boss or 0) + 1)
+            selected_quest = nil
+            local item_y = header_height + selected_boss * boss_spacing + boss_scroll
+            local visible_bottom = love.graphics.getHeight() - detail_height - boss_spacing
+            if item_y > visible_bottom then
+                boss_scroll = boss_scroll - (item_y - visible_bottom)
+            end
+        else
+            selected_quest = math.min(#quests, (selected_quest or 0) + 1)
+            selected_boss = nil
+            local item_y = header_height + selected_quest * boss_spacing + quest_scroll
+            local visible_bottom = love.graphics.getHeight() - detail_height - boss_spacing
+            if item_y > visible_bottom then
+                quest_scroll = quest_scroll - (item_y - visible_bottom)
+            end
+        end
+    elseif key == "space" or key == "return" then
+        if selected_boss then
+            bosses[selected_boss].defeated = not bosses[selected_boss].defeated
+            saveProgress()
+        elseif selected_quest then
+            quests[selected_quest].completed = not quests[selected_quest].completed
+            saveProgress()
         end
     end
 end
