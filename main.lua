@@ -186,6 +186,12 @@ function love.draw()
         local tag = done and " [Done]" or ""
         love.graphics.print(item.name .. tag, 30, base_y)
         local line_y = base_y + 22
+        if item.type then
+            love.graphics.setColor(0.45, 0.65, 0.85)
+            love.graphics.print("[" .. item.type .. "]", 30, line_y)
+            love.graphics.setColor(1, 1, 1)
+            line_y = line_y + 20
+        end
         if item.note then
             if item.note:sub(1, 7) == "LOCKOUT" then
                 love.graphics.setColor(0.9, 0.3, 0.3)
