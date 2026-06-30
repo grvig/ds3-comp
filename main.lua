@@ -80,6 +80,13 @@ function love.draw()
     local weapon_done = 0
     for _, wep in ipairs(weapons) do if wep.obtained then weapon_done = weapon_done + 1 end end
 
+    local total_done = boss_done + quest_done + weapon_done
+    local total_items = #bosses + #quests + #weapons
+    local overall_pct = math.floor((total_done / total_items) * 100)
+    love.graphics.setColor(0.6, 0.6, 0.6)
+    love.graphics.print(overall_pct .. "% overall", w - 140, 18)
+    love.graphics.setColor(1, 1, 1)
+
     local bar_h = 10
     local bar_y = 68
     local bar_pad = 20
