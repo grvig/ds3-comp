@@ -400,6 +400,11 @@ function love.keypressed(key)
         selected_quest = nil
         selected_weapon = nil
         detail_scroll = 0
+    elseif key == "c" and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+        for _, boss in ipairs(bosses) do boss.defeated = false end
+        for _, quest in ipairs(quests) do quest.completed = false end
+        for _, wep in ipairs(weapons) do wep.obtained = false end
+        saveProgress()
     end
 end
 
