@@ -365,6 +365,11 @@ function love.keypressed(key)
             weapons[selected_weapon].obtained = not weapons[selected_weapon].obtained
             saveProgress()
         end
+    elseif key == "escape" then
+        selected_boss = nil
+        selected_quest = nil
+        selected_weapon = nil
+        detail_scroll = 0
     end
 end
 
