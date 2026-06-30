@@ -434,6 +434,16 @@ function loadProgress()
 
 end
 
+function clampScrollValue(scroll, item_count)
+    local content_height = item_count * boss_spacing
+    local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
+
+    if scroll > 0 then scroll = 0 end
+    if scroll < min_scroll then scroll = min_scroll end
+
+    return scroll
+end
+
 function love.wheelmoved(x, y)
 
     local mouse_x, mouse_y = love.mouse.getPosition()
@@ -446,41 +456,11 @@ function love.wheelmoved(x, y)
     end
 
     if mouse_x < mid_x then
-
-        boss_scroll = boss_scroll + (y * 20)
-
-        local content_height = #bosses * boss_spacing
-
-        local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
-
-        if boss_scroll > 0 then
-            boss_scroll = 0
-        end
-
-        if boss_scroll < min_scroll then
-            boss_scroll = min_scroll
-        end
-
+        boss_scroll = clampScrollValue(boss_scroll + (y * 20), #bosses)
     elseif right_panel == "quests" then
-
-        quest_scroll = quest_scroll + (y * 20)
-
-        local content_height = #quests * boss_spacing
-        local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
-
-        if quest_scroll > 0 then quest_scroll = 0 end
-        if quest_scroll < min_scroll then quest_scroll = min_scroll end
-
+        quest_scroll = clampScrollValue(quest_scroll + (y * 20), #quests)
     else
-
-        weapon_scroll = weapon_scroll + (y * 20)
-
-        local content_height = #weapons * boss_spacing
-        local min_scroll = math.min(0, love.graphics.getHeight() - header_height - detail_height - content_height - boss_spacing)
-
-        if weapon_scroll > 0 then weapon_scroll = 0 end
-        if weapon_scroll < min_scroll then weapon_scroll = min_scroll end
-
+        weapon_scroll = clampScrollValue(weapon_scroll + (y * 20), #weapons)
     end
 
 end
