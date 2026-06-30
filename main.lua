@@ -136,14 +136,23 @@ function love.draw()
     local list_h = love.graphics.getHeight() - header_height - detail_height
     love.graphics.setScissor(0, header_height, w, list_h)
 
+    local mouse_x, mouse_y = love.mouse.getPosition()
+
     for i, boss in ipairs(bosses) do
         local status = boss.defeated and "[X]" or "[ ]"
         local draw_y = header_height + (i * boss_spacing) + boss_scroll
         if draw_y > header_height then
+            local hovered = mouse_x >= 20 and mouse_x < mid_x and mouse_y >= draw_y and mouse_y < draw_y + 18
+            if hovered and i ~= selected_boss then
+                love.graphics.setColor(0.25, 0.25, 0.25)
+                love.graphics.rectangle("fill", 15, draw_y - 2, mid_x - 30, 20)
+            end
             if i == selected_boss then
                 love.graphics.setColor(0.9, 0.8, 0.4)
             elseif boss.defeated then
                 love.graphics.setColor(0.35, 0.35, 0.35)
+            else
+                love.graphics.setColor(1, 1, 1)
             end
             love.graphics.print(status .. " " .. boss.name, 20, draw_y)
             love.graphics.setColor(1, 1, 1)
@@ -155,10 +164,17 @@ function love.draw()
             local status = quest.completed and "[X]" or "[ ]"
             local draw_y = header_height + (i * boss_spacing) + quest_scroll
             if draw_y > header_height then
+                local hovered = mouse_x >= mid_x and mouse_y >= draw_y and mouse_y < draw_y + 18
+                if hovered and i ~= selected_quest then
+                    love.graphics.setColor(0.25, 0.25, 0.25)
+                    love.graphics.rectangle("fill", mid_x + 15, draw_y - 2, mid_x - 35, 20)
+                end
                 if i == selected_quest then
                     love.graphics.setColor(0.9, 0.8, 0.4)
                 elseif quest.completed then
                     love.graphics.setColor(0.35, 0.35, 0.35)
+                else
+                    love.graphics.setColor(1, 1, 1)
                 end
                 love.graphics.print(status .. " " .. quest.name, mid_x + 20, draw_y)
                 love.graphics.setColor(1, 1, 1)
@@ -169,10 +185,17 @@ function love.draw()
             local status = wep.obtained and "[X]" or "[ ]"
             local draw_y = header_height + (i * boss_spacing) + weapon_scroll
             if draw_y > header_height then
+                local hovered = mouse_x >= mid_x and mouse_y >= draw_y and mouse_y < draw_y + 18
+                if hovered and i ~= selected_weapon then
+                    love.graphics.setColor(0.25, 0.25, 0.25)
+                    love.graphics.rectangle("fill", mid_x + 15, draw_y - 2, mid_x - 35, 20)
+                end
                 if i == selected_weapon then
                     love.graphics.setColor(0.9, 0.8, 0.4)
                 elseif wep.obtained then
                     love.graphics.setColor(0.35, 0.35, 0.35)
+                else
+                    love.graphics.setColor(1, 1, 1)
                 end
                 love.graphics.print(status .. " " .. wep.name, mid_x + 20, draw_y)
                 love.graphics.setColor(1, 1, 1)
